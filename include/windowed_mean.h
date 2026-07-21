@@ -16,20 +16,20 @@ private:
 
 };
 
-WindowedMean::WindowedMean(long window_length, float primed_value){
+inline WindowedMean::WindowedMean(long window_length, float primed_value){
   _window_length = window_length;
   _mean_accum = primed_value * _window_length;
   _last_mean = primed_value;
 }
 
-float WindowedMean::sample(float sample){
+inline float WindowedMean::sample(float sample){
   _mean_accum -= _last_mean;
   _mean_accum += sample;
   _last_mean = _mean_accum / _window_length;
   return _last_mean;
 }
 
-float WindowedMean::mean(void){
+inline float WindowedMean::mean(void){
   return _last_mean;
 }
 #endif

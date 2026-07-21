@@ -33,7 +33,6 @@ constexpr uint32_t ALARM_RESET_MS = 30000;
 
 constexpr uint8_t EVENT_LED_PIN = 2;
 constexpr uint8_t ALARM_LED_PIN = 3;
-constexpr uint8_t ACTIVITY_LED_PIN = 2;
 constexpr uint8_t ALARM_RESET_PIN = 4;
 constexpr uint8_t ALARM_SIREN_PIN = 5;
 

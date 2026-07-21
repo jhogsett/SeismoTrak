@@ -2,10 +2,10 @@
 
 ## Overview
 
-- Uses two VL52L0X time-of-flight distance detectors mounted in an X-Y configuration
+- Uses two VL53L0X time-of-flight distance detectors mounted in an X-Y configuration
 - Measures the distance to an 8 ounce lead weight suspended 8 inches
 - Weight is a standard fishing line weight with an eye screw, painted with acrylic white paint
-- Suspended using a black Nylon upholstery thread with a M*1.7 8mm screw at the top
+- Suspended using a black Nylon upholstery thread with a M1.7 × 8 mm screw at the top
 - An Arduino Nano Every samples the distance five times per second
 - A sophisticated Z-Score algorithm detects movement, filtering out detector noise
 - When ground movement is detected, a bright red pilot lamp warns along with a loud piezo alarm
