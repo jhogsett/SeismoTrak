@@ -192,7 +192,7 @@ Key constants in `src/SeismoTrak6.ino`:
 SeismoTrak/
 ├── platformio.ini          # PlatformIO build configuration
 ├── src/
-│   ├── SeismoTrak6.ino     # Main firmware (setup, loop, alarm logic)
+│   ├── main.cpp            # Main firmware (setup, loop, alarm logic)
 │   └── zscore.h            # ZScore motion-detection class
 ├── include/
 │   └── windowed_mean.h     # WindowedMean sliding-window filter class

@@ -1,3 +1,5 @@
+#include <Arduino.h>
+#include <Wire.h>
 #include <windowed_mean.h>
 #include "Adafruit_VL53L0X.h"
 #include "zscore.h"
@@ -49,9 +51,17 @@ uint32_t event_start_time = 0;
 bool alarm_active = false;
 bool alarm_suppressed = false;
 
-
 ZScore zscore_x(EVENT_WINDOW_SIZE, BASELINE_WINDOW_SIZE, PRIMED_VALUE, NOISE_FLOOR, EVENT_THRESHOLD);
 ZScore zscore_y(EVENT_WINDOW_SIZE, BASELINE_WINDOW_SIZE, PRIMED_VALUE, NOISE_FLOOR, EVENT_THRESHOLD);
+
+// Function prototypes
+void setID();
+void event_led_on(bool on = true);
+void alarm_led_on(bool on = true);
+void alarm_siren_on(bool on = true);
+void alarm_reset();
+void read_dual_sensors();
+void sleep();
 
 /*
     Reset all sensors by setting all of their XSHUT pins low for delay(10), then set all XSHUT high to bring out of reset
@@ -93,15 +103,15 @@ void setID() {
   }
 }
 
-void event_led_on(bool on = true){
+void event_led_on(bool on){
   digitalWrite(EVENT_LED_PIN, on ? LOW : HIGH);
 }
 
-void alarm_led_on(bool on = true){
+void alarm_led_on(bool on){
   digitalWrite(ALARM_LED_PIN, on ? HIGH : LOW);
 }
 
-void alarm_siren_on(bool on = true){
+void alarm_siren_on(bool on){
   digitalWrite(ALARM_SIREN_PIN, on ? HIGH : LOW);
 }
 
@@ -212,7 +222,7 @@ void read_dual_sensors() {
 
 }
 
-// This needed because sometimes the Arduino Nano Every woke accept 
+// This needed because sometimes the Arduino Nano Every won't accept 
 // programming while the event loop is running
 void sleep(){
   if(digitalRead(SLEEP_PIN) == LOW){
