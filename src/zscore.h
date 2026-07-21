@@ -7,6 +7,8 @@
 class ZScore
 {
 public:
+
+  // TODO: make the newed objects instead static
   ZScore(uint16_t event_window_length, uint16_t baseline_window_length, float primed_value, float noise_floor, float event_threshold){
     _pmean = new WindowedMean(event_window_length, primed_value);    
     _pmad_event = new WindowedMean(event_window_length, 0.0);    
@@ -67,6 +69,7 @@ public:
       _event_triggered = true; 
     }
 
+    // TODO: fix this redudant conditional
     if (event_score >= _event_threshold) {
         // Maintain the "Currently Happening" state
         _event_active = true;
