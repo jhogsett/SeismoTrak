@@ -1,3 +1,5 @@
+<img width="4000" height="3000" alt="20260721_072716" src="https://github.com/user-attachments/assets/5232318a-e837-4125-860d-9aa150d65a64" />
+
 # SeismoTrak — DIY Earthquake Detector
 
 SeismoTrak is an open-source earthquake detector built around an Arduino Nano Every. It uses two VL53L0X time-of-flight laser distance sensors in an X-Y configuration to track the motion of a suspended lead pendulum weight. A custom Z-Score algorithm continuously monitors both axes for statistically significant movement, triggering a bright alarm LED and loud piezo siren when ground motion is detected.
