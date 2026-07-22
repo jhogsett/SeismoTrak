@@ -11,7 +11,8 @@ public:
   Decimator(uint8_t n) : _n(n == 0 ? 1 : n) {}
 
   bool tick() { 
-    return (++_count % _n) == 0; 
+    _count = (++_count % _n);
+    return _count == 0; 
   }
 
 private:

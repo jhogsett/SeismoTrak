@@ -41,10 +41,10 @@ public:
     _last_sample_score = dev / safe_baseline_mean;
 
     // compute a tentative z score based on the deviation and baseline means
-    float event_score = mad_event / safe_baseline_mean;
+    _last_event_score = mad_event / safe_baseline_mean;
 
     // ensure the baseline (background) is not affected when the event threshold is crossed
-    if(event_score < _event_threshold){
+    if(_last_event_score < _event_threshold){
       float mad_baseline = _pmad_baseline->sample(mad_event);
 
       // ensure the new baseline accounts for the noise floor
@@ -60,7 +60,7 @@ public:
 
     } else {
       // during an event use the z score computed on the unaffected baseline
-      _last_baseline_score = event_score;
+      _last_baseline_score = _last_event_score;
 
       // Maintain the "Currently Happening" state
       _event_active = true;
@@ -70,7 +70,7 @@ public:
     }
 
     // TODO: fix this redudant conditional
-    if (event_score >= _event_threshold) {
+    if (_last_event_score >= _event_threshold) {
         // Maintain the "Currently Happening" state
         _event_active = true;
         
@@ -90,6 +90,10 @@ public:
 
   float sample_score(){
     return _last_sample_score;
+  }
+
+  float event_score(){
+    return _last_event_score;
   }
 
   float baseline_score(){
@@ -114,6 +118,7 @@ private:
   WindowedMean * _pmad_baseline;
   float _noise_floor;
   float _event_threshold;
+  float _last_event_score;
   float _last_sample_score;
   float _last_baseline_score;
   bool _event_triggered;
