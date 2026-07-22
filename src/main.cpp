@@ -46,9 +46,15 @@ constexpr uint8_t ALARM_SIREN_PIN = 5;
 constexpr uint8_t ACTIVITY_LED_FILTER = 10;
 uint8_t activity_led_iter = 0;
 
+constexpr uint8_t ACTUAL_EVENT_FILTER = 2;
+bool possible_event_active = false;
+uint32_t possible_event_count = 0;
+bool event_active = false;
+
 uint32_t event_start_time = 0;
 bool alarm_active = false;
 bool alarm_suppressed = false;
+bool alarm_memory = false;
 
 ZScore zscore_x(EVENT_WINDOW_SIZE, BASELINE_WINDOW_SIZE, PRIMED_VALUE, NOISE_FLOOR, EVENT_THRESHOLD);
 ZScore zscore_y(EVENT_WINDOW_SIZE, BASELINE_WINDOW_SIZE, PRIMED_VALUE, NOISE_FLOOR, EVENT_THRESHOLD);
@@ -115,12 +121,14 @@ void alarm_siren_on(bool on){
 }
 
 void alarm_reset(){
-  if(alarm_active && digitalRead(ALARM_RESET_PIN) == LOW){
-    Serial.println("Alarm Suppressed");
-    // alarm_active = false;
-    alarm_suppressed = true;
-    // alarm_led_on(false);
-    alarm_siren_on(false);
+  if(digitalRead(ALARM_RESET_PIN) == LOW){
+    if(alarm_active){
+      Serial.println("Alarm Suppressed");
+      alarm_suppressed = true;
+      alarm_siren_on(false);
+    }
+    
+    alarm_memory = false;
   }
 }
 
@@ -129,15 +137,30 @@ void read_dual_sensors() {
   lox1.rangingTest(&measureY, false); // pass in 'true' to get debug data printout!
 
   activity_led_iter = ++activity_led_iter % ACTIVITY_LED_FILTER; 
+  bool show_activity = false;
+
   if(activity_led_iter == 0){
-    // digitalWrite(ACTIVITY_LED_PIN, LOW);
+    show_activity = true;
+  }
+
+  if(show_activity){
     event_led_on(true);
+
+    if(alarm_memory == true){
+      alarm_led_on(true);
+    }
   }
 
   lox2.rangingTest(&measureX, false); // pass in 'true' to get debug data printout!
 
-  // digitalWrite(ACTIVITY_LED_PIN, HIGH);
+  if(show_activity){
+    show_activity = false;
     event_led_on(false);
+
+    if(alarm_memory == true && alarm_active == false){
+    alarm_led_on(false);
+    }
+  }
 
   if(measureX.RangeStatus == 4 || measureY.RangeStatus == 4){
     // one or both values is out of range; skip this sample round
@@ -194,7 +217,36 @@ void read_dual_sensors() {
 
   // digitalWrite(ACTIVITY_LED_PIN, HIGH);
 
-  bool event_active = zscore_x.is_event_active() || zscore_y.is_event_active();
+  // bool event_active = false;
+
+  bool possible_event = zscore_x.is_event_active() || zscore_y.is_event_active();
+
+  if(possible_event)
+  {
+    // possible event newly/still happening
+
+    if(possible_event_active){
+      // continued possible event
+      possible_event_count++;
+
+      if(possible_event_count >= ACTUAL_EVENT_FILTER){
+        event_active = true;
+      } else {
+        return;
+      }
+
+    } else {
+      // new possible event 
+      possible_event_active = true;
+      possible_event_count = 1;
+      return;
+    }
+  } else {
+    // no current possible event
+    possible_event_active = false;
+    event_active = false;
+  }
+
   event_led_on(event_active);
 
   if(event_active){
@@ -204,6 +256,7 @@ void read_dual_sensors() {
         Serial.println("Alarm Activated");
       }
       alarm_active = true;
+      alarm_memory = true;
       alarm_led_on(true);
       alarm_siren_on(true);
     }
