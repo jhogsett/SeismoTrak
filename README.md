@@ -183,6 +183,7 @@ Key constants in `src/SeismoTrak6.ino`:
 
 | Part | Source |
 |---|---|
+| Printables.com | https://www.printables.com/model/1787359-seismotrak-earthquake-detector-lidar-based |
 | Detector Housing | https://www.tinkercad.com/things/25R8DhcATeh-earthquake-detector-final |
 | Controller Enclosure | https://www.tinkercad.com/things/kzI76yMjvhY-seismotrak-controller-final |
 
