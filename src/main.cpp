@@ -41,7 +41,7 @@ constexpr uint8_t ACTIVITY_LED_FILTER = 10;
 
 Decimator activity_tick(ACTIVITY_LED_FILTER);
 
-constexpr uint8_t ACTUAL_EVENT_FILTER = 2;
+constexpr uint8_t ACTUAL_EVENT_FILTER = 4;
 ConsecutiveFilter event_filter(ACTUAL_EVENT_FILTER);
 bool event_active = false;
 uint32_t event_start_time = 0;
