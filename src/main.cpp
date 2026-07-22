@@ -192,7 +192,7 @@ void read_dual_sensors() {
   static uint32_t start_ms = millis();
   if(millis() - start_ms < WARMUP_TIME){
 
-    // avoid triggering an alarm immediiately on start up
+    // avoid triggering an alarm immediately on startup
     return;
   }
 

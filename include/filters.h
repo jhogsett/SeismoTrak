@@ -5,6 +5,7 @@
 
 // classes recommended and created by Claude Sonnet 4.6
 
+// Provide a true return value once for every N calls, otherwise return false
 class Decimator {
   uint8_t _n, _count = 0;
 public:
@@ -12,6 +13,7 @@ public:
     bool tick() { return (++_count % _n) == 0; }
 };
 
+// Require N calls with true for a true return value, otherwise return false
 class ConsecutiveFilter {
   uint8_t _n, _count = 0;
 public:
