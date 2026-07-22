@@ -189,12 +189,14 @@ void read_dual_sensors() {
   // Serial.print(zscore_x.is_event_active() ? 100 : 0);  
   // Serial.println();
 
-  if(millis() < WARMUP_TIME){
+  static uint32_t start_ms = millis();
+  if(millis() - start_ms < WARMUP_TIME){
+
     // avoid triggering an alarm immediiately on start up
     return;
   }
 
-  bool event_active = event_filter.update(zscore_x.is_event_active() || zscore_y.is_event_active());  
+  event_active = event_filter.update(zscore_x.is_event_active() || zscore_y.is_event_active());  
 
   event_led_on(event_active);
 
