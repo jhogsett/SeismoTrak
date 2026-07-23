@@ -203,6 +203,7 @@ void read_dual_sensors() {
 
   bool possible_event = zscore_x.is_event_active() || zscore_y.is_event_active();
 
+  // todo: because this is temporary diagnostic code it's OK if it affects loop timing
   if(/*show_activity &&*/ possible_event){
     Serial.print("POSSIBLE EVENT: ");
     Serial.print(" XS:");

@@ -15,6 +15,7 @@ public:
     _pmad_baseline = new WindowedMean(baseline_window_length, 0.0);    
     _noise_floor = noise_floor;
     _event_threshold = event_threshold;
+    _last_event_score = 0.0;
     _last_sample_score = 0.0;
     _last_baseline_score = 0.0;
     _event_triggered = false;
@@ -69,17 +70,17 @@ public:
       _event_triggered = true; 
     }
 
-    // TODO: fix this redudant conditional
-    if (_last_event_score >= _event_threshold) {
-        // Maintain the "Currently Happening" state
-        _event_active = true;
+    // // TODO: fix this redudant conditional
+    // if (_last_event_score >= _event_threshold) {
+    //     // Maintain the "Currently Happening" state
+    //     _event_active = true;
         
-        // Trip the "Event Triggered" trap if it isn't already tripped
-        _event_triggered = true; 
-    } else {
-        // Automatically turns off when the smooth score falls below threshold
-        _event_active = false; 
-    }
+    //     // Trip the "Event Triggered" trap if it isn't already tripped
+    //     _event_triggered = true; 
+    // } else {
+    //     // Automatically turns off when the smooth score falls below threshold
+    //     _event_active = false; 
+    // }
 
     return _last_baseline_score;
   }

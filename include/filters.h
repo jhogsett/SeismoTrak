@@ -6,7 +6,6 @@
 // classes recommended and created by Claude Sonnet 4.6
 
 // Provide a true return value once for every N calls, otherwise return false
-// TODO: deal with wrap causing early _count == 0
 class Decimator {
 public:
   Decimator(uint8_t n) : _n(n == 0 ? 1 : n) {}
