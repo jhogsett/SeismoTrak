@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-// classes recommended and created by Claude Sonnet 4.6
+// classes recommended and initially created by Claude Sonnet 4.6
 
 // Provide a true return value once for every N calls, otherwise return false
 class Decimator {

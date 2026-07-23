@@ -29,7 +29,7 @@ constexpr uint16_t EVENT_WINDOW_SIZE = 5;
 constexpr uint16_t BASELINE_WINDOW_SIZE = 300;
 constexpr uint16_t PRIMED_VALUE = 45;
 constexpr float NOISE_FLOOR = 1.0;
-constexpr float EVENT_THRESHOLD = 1.50;
+constexpr float EVENT_THRESHOLD = 1.75;
 constexpr uint32_t ALARM_RESET_MS = 30000;
 
 constexpr uint8_t ACTIVITY_LED_PIN = 2;
@@ -49,6 +49,8 @@ bool alarm_memory = false;
 bool alarm_suppressed = false;
 
 constexpr uint32_t WARMUP_TIME = 10000;
+
+bool verbose_mode = false;
 
 ZScore zscore_x(EVENT_WINDOW_SIZE, BASELINE_WINDOW_SIZE, PRIMED_VALUE, NOISE_FLOOR, EVENT_THRESHOLD);
 ZScore zscore_y(EVENT_WINDOW_SIZE, BASELINE_WINDOW_SIZE, PRIMED_VALUE, NOISE_FLOOR, EVENT_THRESHOLD);
@@ -126,6 +128,12 @@ void alarm_reset(){
   }
 }
 
+void verbose_beep(){
+    alarm_siren_on(true);
+    delay(10);
+    alarm_siren_on(false);  
+}
+
 void read_dual_sensors() {
 
   lox1.rangingTest(&measureY, false); // pass in 'true' to get debug data printout!
@@ -165,7 +173,7 @@ void read_dual_sensors() {
   current_y = measureY.RangeMilliMeter;
   zscore_y.sample(current_y);
 
-  if(show_activity){
+  if(verbose_mode && show_activity){
   // Serial.print("min:40.0 max:60.0 ");
   // Serial.print("X:");
   // Serial.print(zscore_x.mean());  
@@ -204,7 +212,14 @@ void read_dual_sensors() {
   bool possible_event = zscore_x.is_event_active() || zscore_y.is_event_active();
 
   // todo: because this is temporary diagnostic code it's OK if it affects loop timing
-  if(/*show_activity &&*/ possible_event){
+  if(verbose_mode && possible_event){
+
+    // briefly play the buzzer to draw my attention
+    // alarm_siren_on(true);
+    // delay(10);
+    // alarm_siren_on(false);
+    verbose_beep();
+
     Serial.print("POSSIBLE EVENT: ");
     Serial.print(" XS:");
     Serial.print(zscore_x.sample_score());  
@@ -278,6 +293,13 @@ void setup() {
   pinMode(ALARM_RESET_PIN, INPUT_PULLUP);
   pinMode(ALARM_SIREN_PIN, OUTPUT);
   digitalWrite(ALARM_SIREN_PIN, LOW);
+
+  // enter vebose mode if mute button is held on start up
+  if(digitalRead(ALARM_RESET_PIN) == LOW){
+    verbose_mode = true;
+    verbose_beep();
+    while(digitalRead(ALARM_RESET_PIN) == LOW);
+  }
 
   // start-up self tests
   activity_led_on(true);
