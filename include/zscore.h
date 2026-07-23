@@ -70,18 +70,6 @@ public:
       _event_triggered = true; 
     }
 
-    // // TODO: fix this redudant conditional
-    // if (_last_event_score >= _event_threshold) {
-    //     // Maintain the "Currently Happening" state
-    //     _event_active = true;
-        
-    //     // Trip the "Event Triggered" trap if it isn't already tripped
-    //     _event_triggered = true; 
-    // } else {
-    //     // Automatically turns off when the smooth score falls below threshold
-    //     _event_active = false; 
-    // }
-
     return _last_baseline_score;
   }
 
