@@ -15,6 +15,7 @@ public:
     _pmad_baseline = new WindowedMean(baseline_window_length, 0.0);    
     _noise_floor = noise_floor;
     _event_threshold = event_threshold;
+    _last_event_score = 0.0;
     _last_sample_score = 0.0;
     _last_baseline_score = 0.0;
     _event_triggered = false;
@@ -41,10 +42,10 @@ public:
     _last_sample_score = dev / safe_baseline_mean;
 
     // compute a tentative z score based on the deviation and baseline means
-    float event_score = mad_event / safe_baseline_mean;
+    _last_event_score = mad_event / safe_baseline_mean;
 
     // ensure the baseline (background) is not affected when the event threshold is crossed
-    if(event_score < _event_threshold){
+    if(_last_event_score < _event_threshold){
       float mad_baseline = _pmad_baseline->sample(mad_event);
 
       // ensure the new baseline accounts for the noise floor
@@ -60,25 +61,13 @@ public:
 
     } else {
       // during an event use the z score computed on the unaffected baseline
-      _last_baseline_score = event_score;
+      _last_baseline_score = _last_event_score;
 
       // Maintain the "Currently Happening" state
       _event_active = true;
       
       // Trip the "Event Triggered" trap if it isn't already tripped
       _event_triggered = true; 
-    }
-
-    // TODO: fix this redudant conditional
-    if (event_score >= _event_threshold) {
-        // Maintain the "Currently Happening" state
-        _event_active = true;
-        
-        // Trip the "Event Triggered" trap if it isn't already tripped
-        _event_triggered = true; 
-    } else {
-        // Automatically turns off when the smooth score falls below threshold
-        _event_active = false; 
     }
 
     return _last_baseline_score;
@@ -90,6 +79,10 @@ public:
 
   float sample_score(){
     return _last_sample_score;
+  }
+
+  float event_score(){
+    return _last_event_score;
   }
 
   float baseline_score(){
@@ -114,6 +107,7 @@ private:
   WindowedMean * _pmad_baseline;
   float _noise_floor;
   float _event_threshold;
+  float _last_event_score;
   float _last_sample_score;
   float _last_baseline_score;
   bool _event_triggered;
